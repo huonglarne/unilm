@@ -1,30 +1,50 @@
-   conda install xformers -c xformers
- 
-   python preprocess_data.py
+Set up
 
-   python run_beit3_finetuning.py  --task imagenet --data_path  --sentencepiece_model beit3.spm
+   conda create -n unilm python=3.8
 
-   MOREH_DUMP_EXEC_GRAPH=1 python run_beit3_finetuning.py \
-        --model beit3_base_patch16_224 \
-        --task imagenet \
-        --batch_size 128 \
-        --layer_decay 0.65 \
-        --lr 7e-4 \
-        --update_freq 1 \
-        --epochs 50 \
-        --warmup_epochs 5 \
-        --drop_path 0.15 \
-        --sentencepiece_model model/beit3.spm \
-        --finetune model/beit3_base_patch16_224_in1k.pth \
-        --data_path /nas/common_data/imagenet_100cls \
-        --output_dir ./model \
-        --log_dir ./log \
-        --weight_decay 0.05 \
-        --seed 42 \
-        --save_ckpt_freq 5 \
-        --dist_eval \
-        --mixup 0.8 \
-        --cutmix 1.0
+   conda activate unilm
+
+   pip install -r requirements.txt
+
+   update-moreh --torch 1.13.1 --force
+
+
+Preprocess data - change the path in the file
+
+     python preprocess_data.py
+
+
+Download pretrained models
+
+      wget "https://conversationhub.blob.core.windows.net/beit-share-public/beit3/pretraining/beit3_base_patch16_224.pth?sv=2021-10-04&st=2023-06-08T11%3A16%3A02Z&se=2033-06-09T11%3A16%3A00Z&sr=c&sp=r&sig=N4pfCVmSeq4L4tS8QbrFVsX6f6q844eft8xSuXdxU48%3D" -o "model/beit3_base_patch16_224_in1k.pth"
+
+      wget "https://conversationhub.blob.core.windows.net/beit-share-public/beit3/ piece/beit3.spm?sv=2021-10-04&st=2023-06-08T11%3A16%3A02Z&se=2033-06-09T11%3A16%3A00Z&sr=c&sp=r&sig=N4pfCVmSeq4L4tS8QbrFVsX6f6q844eft8xSuXdxU48%3D" -o "model/beit3.spm"
+
+
+Run finetune
+
+      python run_beit3_finetuning.py \
+         --model beit3_base_patch16_224 \
+         --task imagenet \
+         --batch_size 128 \
+         --layer_decay 0.65 \
+         --lr 7e-4 \
+         --update_freq 1 \
+         --epochs 50 \
+         --warmup_epochs 5 \
+         --drop_path 0.15 \
+         --sentencepiece_model model/beit3.spm \
+         --finetune model/beit3_base_patch16_224_in1k.pth \
+         --data_path /nas/common_data/imagenet_100cls \
+         --output_dir ./model \
+         --log_dir ./log \
+         --weight_decay 0.05 \
+         --seed 42 \
+         --save_ckpt_freq 5 \
+         --dist_eval \
+         --mixup 0.8 \
+         --cutmix 1.0 \
+         2>&1 | tee log.txt
 
 
 # [(BEiT-3) Image as a Foreign Language: BEiT Pretraining for Vision and Vision-Language Tasks](https://arxiv.org/abs/2208.10442)

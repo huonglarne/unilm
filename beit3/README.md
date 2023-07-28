@@ -1,3 +1,32 @@
+   conda install xformers -c xformers
+ 
+   python preprocess_data.py
+
+   python run_beit3_finetuning.py  --task imagenet --data_path  --sentencepiece_model beit3.spm
+
+   MOREH_DUMP_EXEC_GRAPH=1 python run_beit3_finetuning.py \
+        --model beit3_base_patch16_224 \
+        --task imagenet \
+        --batch_size 128 \
+        --layer_decay 0.65 \
+        --lr 7e-4 \
+        --update_freq 1 \
+        --epochs 50 \
+        --warmup_epochs 5 \
+        --drop_path 0.15 \
+        --sentencepiece_model model/beit3.spm \
+        --finetune model/beit3_base_patch16_224_in1k.pth \
+        --data_path /nas/common_data/imagenet_100cls \
+        --output_dir ./model \
+        --log_dir ./log \
+        --weight_decay 0.05 \
+        --seed 42 \
+        --save_ckpt_freq 5 \
+        --dist_eval \
+        --mixup 0.8 \
+        --cutmix 1.0
+
+
 # [(BEiT-3) Image as a Foreign Language: BEiT Pretraining for Vision and Vision-Language Tasks](https://arxiv.org/abs/2208.10442)
 
 Official PyTorch implementation and pretrained models of BEiT-3. 
@@ -6,7 +35,7 @@ The code and pretrained models of **BEiT** can be found at [here](https://github
 
 The code and pretrained models of **BEiT v2** can be found at [here](https://github.com/microsoft/unilm/tree/master/beit2).
 
-- March, 2023: release [the code and pretrained models of **BEiT-3**](https://github.com/microsoft/unilm/tree/master/beit3)
+- March, 2023: release [the code and pretrained models of **BEiT-3**](https://github.com/microsoft/\unilm/tree/master/beit3)
 - March, 2023: [**BEiT-3**](https://arxiv.org/abs/2208.10442) was accepted by **CVPR 2023**.
 - Sept 2022: release [the code and pretrained models of **BEiT v2**](https://github.com/microsoft/unilm/tree/master/beit2)
 - Aug 2022: release preprint [Image as a Foreign Language: BEiT Pretraining for All Vision and Vision-Language Tasks](https://arxiv.org/abs/2208.10442)
@@ -44,7 +73,7 @@ We provide BEiT-3 weights pretrained on monomodal and multimodal data. Our large
 
 ### Text Tokenizer
 
-[beit3.spm](https://conversationhub.blob.core.windows.net/beit-share-public/beit3/sentencepiece/beit3.spm?sv=2021-10-04&st=2023-06-08T11%3A16%3A02Z&se=2033-06-09T11%3A16%3A00Z&sr=c&sp=r&sig=N4pfCVmSeq4L4tS8QbrFVsX6f6q844eft8xSuXdxU48%3D) is the sentencepiece model used for tokenizing texts.
+[beit3.spm](https://conversationhub.blob.core.windows.net/beit-share-public/beit3/ piece/beit3.spm?sv=2021-10-04&st=2023-06-08T11%3A16%3A02Z&se=2033-06-09T11%3A16%3A00Z&sr=c&sp=r&sig=N4pfCVmSeq4L4tS8QbrFVsX6f6q844eft8xSuXdxU48%3D) is the sentencepiece model used for tokenizing texts.
 ```
 from transformers import XLMRobertaTokenizer
 tokenizer = XLMRobertaTokenizer("/your_beit3_model_path/beit3.spm")
@@ -70,6 +99,8 @@ pip install -r requirements.txt
 
 
 ## Fine-tuning on ImageNet-1k (Image Classification)
+
+ls /nas/common_data/imagenet_100cls/
 
 The detailed instructions can be found at [`get_started_for_image_classification.md`](get_started/get_started_for_image_classification.md). We only use vision-related parameters for image classification fine-tuning.
 

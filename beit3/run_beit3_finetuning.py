@@ -28,6 +28,8 @@ from utils import NativeScalerWithGradNormCount as NativeScaler
 import utils
 import modeling_finetune
 
+torch.multiprocessing.set_sharing_strategy('file_system') 
+
 
 def get_args():
     parser = argparse.ArgumentParser('BEiT fine-tuning and evaluation script for image classification', add_help=False)
